@@ -6,6 +6,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -94,6 +96,20 @@ public class MainActivity extends AppCompatActivity {
         addMusicFrom(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
     }
 
+    private int playSong(String path) {
+        MediaPlayer mp = new MediaPlayer();
+
+        try {
+            mp.setDataSource(path);
+            mp.prepare();
+            mp.start();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return mp.getDuration();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -113,9 +129,14 @@ public class MainActivity extends AppCompatActivity {
             textAdapter.setData(musicList);
             lvMusicList.setAdapter(textAdapter);
 
+            final SeekBar seekBar = findViewById(R.id.seekBar);
+
             lvMusicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    final String musicFilePath = musicList.get(position);
+                    final int songDuration = playSong(musicFilePath);
+                    seekBar.setVisibility(View.VISIBLE);
 
                 }
             });
