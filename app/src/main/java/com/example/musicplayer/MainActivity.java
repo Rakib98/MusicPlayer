@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS = 12345;
     private  static final int PERMISSIONS_COUNT = 1;
     private List<String> musicList;
+    private MediaPlayer mp;
+    int songCurrentPos = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int playSong(String path) {
-        MediaPlayer mp = new MediaPlayer();
-
+        mp = new MediaPlayer();
         try {
             mp.setDataSource(path);
             mp.prepare();
@@ -109,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return mp.getDuration();
     }
+
+
 
     @Override
     protected void onResume() {
@@ -131,13 +134,50 @@ public class MainActivity extends AppCompatActivity {
 
             final SeekBar seekBar = findViewById(R.id.seekBar);
 
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                int songProgress;
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    songProgress = progress;
+                    songCurrentPos = progress;
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    mp.seekTo(songProgress);
+                }
+            });
             lvMusicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final String musicFilePath = musicList.get(position);
                     final int songDuration = playSong(musicFilePath);
+                    seekBar.setMax(songDuration);
                     seekBar.setVisibility(View.VISIBLE);
 
+                    new Thread(){
+                        public void run() {
+                            while (songCurrentPos < songDuration) {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                songCurrentPos+= 1000;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        seekBar.setProgress(songCurrentPos);
+                                    }
+                                });
+                            }
+                        }
+                    }.start();
                 }
             });
 
