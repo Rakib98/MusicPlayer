@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
             final SeekBar seekBar = findViewById(R.id.seekBar);
             final Button prev = findViewById(R.id.prev);
             final Button next = findViewById(R.id.next);
+            final Button play = findViewById(R.id.play);
+            final Button pause = findViewById(R.id.pause);
 
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 int songProgress;
@@ -200,6 +202,21 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             final  String next = musicList.get(position + 1);
                             final int playNext = playSong(next);
+                        }
+                    });
+
+                    //Play
+                    play.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mp.start();
+                        }
+                    });
+                    //pause
+                    pause.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mp.pause();
                         }
                     });
 
