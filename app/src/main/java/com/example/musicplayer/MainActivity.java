@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS = 12345;
     private  static final int PERMISSIONS_COUNT = 1;
     private List<String> musicList;
-    private MediaPlayer mp;
+    private MediaPlayer mp = new MediaPlayer();
     int songCurrentPos = 0;
 
     @Override
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int playSong(String path) {
+        mp.stop();
         mp = new MediaPlayer();
         try {
             mp.setDataSource(path);
