@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
+    <string name="Prev"><![CDATA[<-]]></string>
+    <string name="Next"><![CDATA[->]]></string>
 </resources>

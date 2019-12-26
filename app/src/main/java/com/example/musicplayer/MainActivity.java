@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -134,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
             lvMusicList.setAdapter(textAdapter);
 
             final SeekBar seekBar = findViewById(R.id.seekBar);
+            final Button prev = findViewById(R.id.prev);
+            final Button next = findViewById(R.id.next);
 
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 int songProgress;
@@ -153,11 +156,13 @@ public class MainActivity extends AppCompatActivity {
                     mp.seekTo(songProgress);
                 }
             });
+
             lvMusicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                     final String musicFilePath = musicList.get(position);
                     final int songDuration = playSong(musicFilePath);
+
                     seekBar.setMax(songDuration);
                     seekBar.setVisibility(View.VISIBLE);
 
@@ -179,10 +184,32 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }.start();
+
+                    //Play previous song
+                    prev.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final  String prev = musicList.get(position -1);
+                            final int playPrev = playSong(prev);
+                        }
+                    });
+
+                    //Play next song
+                    next.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final  String next = musicList.get(position + 1);
+                            final int playNext = playSong(next);
+                        }
+                    });
+
                 }
             });
 
             isMusicPlayerInit = true;
+
+
+
         }
     }
 
